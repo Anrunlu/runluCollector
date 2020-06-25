@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Ref } from '@typegoose/typegoose';
-import { Group } from '@libs/db/models/group.model';
-import { Org } from '@libs/db/models/org.model';
 import { Admin } from '@libs/db/models/admin.model';
 
 export class CreateOrgDto {

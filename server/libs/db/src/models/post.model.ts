@@ -11,6 +11,9 @@ import { Org } from './org.model';
 })
 export class Post {
   @prop()
+  origname: string;
+
+  @prop()
   filename: string;
 
   @prop()

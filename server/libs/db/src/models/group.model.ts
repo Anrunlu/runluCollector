@@ -22,7 +22,7 @@ export class Group {
   creator: Ref<User>;
 
   @prop({ ref: 'User' })
-  manager: Ref<User>;
+  manager: Ref<User>[];
 
   @prop({
     localField: '_id',

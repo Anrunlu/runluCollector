@@ -16,6 +16,9 @@ export class CreateGroupDto {
   @ApiProperty({ description: '创建者id', example: 'xxxx' })
   creator: Ref<User>;
 
-  @ApiProperty({ description: '管理者id', example: 'xxxx' })
-  manager?: Ref<User>;
+  @ApiProperty({
+    description: '管理者id',
+    example: ['xxx'],
+  })
+  manager?: Ref<User>[];
 }

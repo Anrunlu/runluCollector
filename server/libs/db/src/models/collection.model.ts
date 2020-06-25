@@ -28,6 +28,9 @@ export class Collection {
   @prop()
   fileformat: string[];
 
+  @prop({ default: 1 })
+  renamerule: number;
+
   @prop()
   endtime: Date;
 
