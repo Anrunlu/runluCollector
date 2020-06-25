@@ -8,16 +8,17 @@ import { GroupsModule } from './groups/groups.module';
 import { AdminsModule } from './admins/admins.module';
 import { CollectionsModule } from './collections/collections.module';
 import { PostsModule } from './posts/posts.module';
+import { CommonModule } from 'libs/common/src';
 
 @Module({
   imports: [
-    DbModule,
+    CommonModule,
     UsersModule,
     OrgsModule,
     GroupsModule,
     AdminsModule,
     CollectionsModule,
-    PostsModule
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

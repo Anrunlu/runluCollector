@@ -20,11 +20,16 @@ const models = TypegooseModule.forFeature([
 @Module({
   imports: [
     // 连接数据库
-    TypegooseModule.forRoot('mongodb://localhost/runluCollector', {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
+    TypegooseModule.forRootAsync({
+      useFactory() {
+        return {
+          uri: process.env.DB,
+          useNewUrlParser: true,
+          useCreateIndex: true,
+          useUnifiedTopology: true,
+          useFindAndModify: false,
+        };
+      },
     }),
     models,
   ],
