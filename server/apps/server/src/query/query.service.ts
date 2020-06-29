@@ -58,11 +58,13 @@ export class QueryService {
 
   // 查询用户创建和管理的群组
   async myAccessableGroups(userId: string): Promise<Group[]> {
-    return await this.groupModel.find({
-      $or: [
-        { creator: Types.ObjectId(userId) },
-        { manager: Types.ObjectId(userId) },
-      ],
-    });
+    return await this.groupModel
+      .find({
+        $or: [
+          { creator: Types.ObjectId(userId) },
+          { manager: Types.ObjectId(userId) },
+        ],
+      })
+      .select('name');
   }
 }

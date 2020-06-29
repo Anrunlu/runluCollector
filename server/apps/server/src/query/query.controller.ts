@@ -12,7 +12,6 @@ import { Group } from '@libs/db/models/group.model';
 
 @ApiTags('查询接口')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('UserJwt'))
 @Controller('query')
 export class QueryController {
   constructor(private readonly queryService: QueryService) {}
@@ -24,18 +23,21 @@ export class QueryController {
   }
 
   @Get('org/:id')
+  @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取组织详细信息' })
   getOrgDetail(@Param('id') id: string): Promise<any> {
     return this.queryService.orgDetail(id);
   }
 
   @Get('tasklist')
+  @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取收集任务列表' })
   getMyTasks(@CurrentUser() user: DocumentType<User>): Promise<Collection[]> {
     return this.queryService.myTasks(user.groups as Types.ObjectId[]);
   }
 
   @Get('myAccessableGroups')
+  @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取用户创建和管理的群组列表' })
   getMyAccessableGroups(
     @CurrentUser() user: DocumentType<User>,

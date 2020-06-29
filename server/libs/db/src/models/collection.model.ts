@@ -2,6 +2,7 @@ import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { User } from './user.model';
 import { Group } from './group.model';
 import { Post } from './post.model';
+import { Org } from './org.model';
 
 @modelOptions({
   schemaOptions: {
@@ -21,6 +22,9 @@ export class Collection {
 
   @prop({ enum: ['publice', 'private'] })
   property: string;
+
+  @prop({ ref: 'Org' })
+  org: Ref<Org>;
 
   @prop({ ref: 'Group' })
   groups: Ref<Group>[];
