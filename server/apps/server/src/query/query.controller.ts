@@ -8,6 +8,7 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { DocumentType } from '@typegoose/typegoose';
 import { User } from '@libs/db/models/user.model';
 import { Types } from 'mongoose';
+import { Group } from '@libs/db/models/group.model';
 
 @ApiTags('查询接口')
 @ApiBearerAuth()
@@ -32,5 +33,13 @@ export class QueryController {
   @ApiOperation({ summary: '获取收集任务列表' })
   getMyTasks(@CurrentUser() user: DocumentType<User>): Promise<Collection[]> {
     return this.queryService.myTasks(user.groups as Types.ObjectId[]);
+  }
+
+  @Get('myAccessableGroups')
+  @ApiOperation({ summary: '获取用户创建和管理的群组列表' })
+  getMyAccessableGroups(
+    @CurrentUser() user: DocumentType<User>,
+  ): Promise<Group[]> {
+    return this.queryService.myAccessableGroups(user.id);
   }
 }

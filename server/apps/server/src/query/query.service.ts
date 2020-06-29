@@ -16,23 +16,25 @@ export class QueryService {
     @InjectModel(User) private readonly userModel: ModelType<User>,
   ) {}
 
+  // 查询组织列表
   async orgList(): Promise<Org[]> {
     return await this.orgModel.find();
   }
 
-  async orgDetail(id: string): Promise<any> {
+  // 查询组织详情
+  async orgDetail(orgId: string): Promise<any> {
     const gNums = await this.groupModel.countDocuments({
-      org: Types.ObjectId(id),
+      org: Types.ObjectId(orgId),
     });
     const uNums = await this.userModel.countDocuments({
-      org: Types.ObjectId(id),
+      org: Types.ObjectId(orgId),
     });
     const cNums = await this.cltModel.countDocuments({
-      org: Types.ObjectId(id),
+      org: Types.ObjectId(orgId),
     });
     // eslint-disable-next-line prefer-const
     let org: any = await (
-      await this.orgModel.findById(id).select('-creator')
+      await this.orgModel.findById(orgId).select('-creator')
     ).toObject();
     org.gNums = gNums;
     org.uNums = uNums;
@@ -40,8 +42,8 @@ export class QueryService {
     return org;
   }
 
+  // 查询任务列表
   async myTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
-    // 查询任务列表
     return await this.cltModel.find({ groups: { $in: groups } }).populate([
       {
         path: 'groups',
@@ -52,5 +54,15 @@ export class QueryService {
         select: 'nickname',
       },
     ]);
+  }
+
+  // 查询用户创建和管理的群组
+  async myAccessableGroups(userId: string): Promise<Group[]> {
+    return await this.groupModel.find({
+      $or: [
+        { creator: Types.ObjectId(userId) },
+        { manager: Types.ObjectId(userId) },
+      ],
+    });
   }
 }
