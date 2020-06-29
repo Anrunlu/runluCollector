@@ -39,4 +39,18 @@ export class QueryService {
     org.cNums = cNums;
     return org;
   }
+
+  async myTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
+    // 查询任务列表
+    return await this.cltModel.find({ groups: { $in: groups } }).populate([
+      {
+        path: 'groups',
+        select: 'name',
+      },
+      {
+        path: 'creator',
+        select: 'nickname',
+      },
+    ]);
+  }
 }

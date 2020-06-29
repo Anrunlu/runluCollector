@@ -1,9 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { QueryService } from './query.service';
 import { Org } from '@libs/db/models/org.model';
+import { AuthGuard } from '@nestjs/passport';
+import { Collection } from '@libs/db/models/collection.model';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { DocumentType } from '@typegoose/typegoose';
+import { User } from '@libs/db/models/user.model';
+import { Types } from 'mongoose';
 
 @ApiTags('查询接口')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('UserJwt'))
 @Controller('query')
 export class QueryController {
   constructor(private readonly queryService: QueryService) {}
@@ -18,5 +26,11 @@ export class QueryController {
   @ApiOperation({ summary: '获取组织详细信息' })
   getOrgDetail(@Param('id') id: string): Promise<any> {
     return this.queryService.orgDetail(id);
+  }
+
+  @Get('tasklist')
+  @ApiOperation({ summary: '获取收集任务列表' })
+  getMyTasks(@CurrentUser() user: DocumentType<User>): Promise<Collection[]> {
+    return this.queryService.myTasks(user.groups as Types.ObjectId[]);
   }
 }

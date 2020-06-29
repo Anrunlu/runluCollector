@@ -1,6 +1,7 @@
 import { prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { User } from './user.model';
 import { Org } from './org.model';
+import { Collection } from './collection.model';
 
 @modelOptions({
   schemaOptions: {
@@ -23,6 +24,14 @@ export class Group {
 
   @prop({ ref: 'User' })
   manager: Ref<User>[];
+
+  @prop({
+    localField: '_id',
+    ref: 'Collection',
+    foreignField: 'groups',
+    justOne: false,
+  })
+  collections: Ref<Collection>[];
 
   @prop({
     localField: '_id',
