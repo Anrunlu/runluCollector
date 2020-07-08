@@ -5,6 +5,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { Collection } from '@libs/db/models/collection.model';
 import { Group } from '@libs/db/models/group.model';
 import { User } from '@libs/db/models/user.model';
+import { Post } from '@libs/db/models/post.model';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class QueryService {
     @InjectModel(Collection) private readonly cltModel: ModelType<Collection>,
     @InjectModel(Group) private readonly groupModel: ModelType<Group>,
     @InjectModel(User) private readonly userModel: ModelType<User>,
+    @InjectModel(Post) private readonly postModel: ModelType<Post>,
   ) {}
 
   // 查询组织列表
@@ -66,5 +68,17 @@ export class QueryService {
         ],
       })
       .select('name');
+  }
+
+  // 查询是否已经提交过
+  async isSubmitted(cltId: string, userId: string): Promise<any> {
+    const res = await this.postModel.find({
+      desclt: Types.ObjectId(cltId),
+      creator: Types.ObjectId(userId),
+    });
+    if (res.length > 0) {
+      return { submitted: true, post: res[0] };
+    }
+    return { submitted: false };
   }
 }

@@ -24,13 +24,11 @@ export class CollectionsService {
   }
 
   async getDetail(id: string): Promise<Collection> {
-    return await this.cltModel
-      .findById(id)
-      .populate([
-        { path: 'creator', select: 'nickname' },
-        { path: 'groups', select: 'name' },
-        { path: 'posts' },
-      ]);
+    return await this.cltModel.findById(id).populate([
+      { path: 'creator', select: 'nickname' },
+      { path: 'groups', select: 'name' },
+      { path: 'posts', populate: { path: 'creator', select: 'nickname' } },
+    ]);
   }
 
   async create(createCollectionDto: CreateCollectionDto): Promise<Collection> {

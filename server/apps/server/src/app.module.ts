@@ -5,9 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from '@app/common';
 import { QueryModule } from './query/query.module';
 import { CollectionsModule } from './collections/collections.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
-  imports: [CommonModule, AuthModule, QueryModule, CollectionsModule],
+  imports: [CommonModule, AuthModule, QueryModule, CollectionsModule, PostsModule],
   controllers: [AppController],
   providers: [AppService],
 })

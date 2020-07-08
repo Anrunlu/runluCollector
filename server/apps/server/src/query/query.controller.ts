@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { QueryService } from './query.service';
 import { Org } from '@libs/db/models/org.model';
@@ -43,5 +43,15 @@ export class QueryController {
     @CurrentUser() user: DocumentType<User>,
   ): Promise<Group[]> {
     return this.queryService.myAccessableGroups(user.id);
+  }
+
+  @Get('isSubmitted')
+  @UseGuards(AuthGuard('UserJwt'))
+  @ApiOperation({ summary: '查询是否已提交过' })
+  isSubmited(
+    @CurrentUser() user: DocumentType<User>,
+    @Query('cltId') cltId: string,
+  ): Promise<Group[]> {
+    return this.queryService.isSubmitted(cltId, user.id);
   }
 }
