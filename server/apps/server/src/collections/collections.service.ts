@@ -31,6 +31,13 @@ export class CollectionsService {
     ]);
   }
 
+  async getTitleAndGroups(id: string): Promise<Collection> {
+    return await this.cltModel
+      .findById(id)
+      .populate({ path: 'groups', select: 'name' })
+      .select('title');
+  }
+
   async create(createCollectionDto: CreateCollectionDto): Promise<Collection> {
     const createdCollection = new this.cltModel(createCollectionDto);
     return createdCollection.save();

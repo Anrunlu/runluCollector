@@ -38,10 +38,12 @@ export class CollectionsController {
   @ApiOperation({ summary: '显示收集详情' })
   detail(
     @Param('id') id: string,
-    @Query() query: { mode: string },
+    @Query('mode') mode: string,
   ): Promise<Collection> {
-    if (query.mode === 'detail') {
+    if (mode === 'detail') {
       return this.cltsService.getDetail(id);
+    } else if (mode === 'titleAndGruops') {
+      return this.cltsService.getTitleAndGroups(id);
     }
     return this.cltsService.getInfo(id);
   }

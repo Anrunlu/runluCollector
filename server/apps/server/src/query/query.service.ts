@@ -81,4 +81,35 @@ export class QueryService {
     }
     return { submitted: false };
   }
+
+  /* 查询给定收集的给定组的详细提交信息 */
+  // 返回已提交列表
+  async cltSubmittedList(cltId: string, groupId: string): Promise<Post[]> {
+    return await this.postModel
+      .find({ desclt: Types.ObjectId(cltId), groups: Types.ObjectId(groupId) })
+      .populate({ path: 'creator', select: 'username nickname' });
+  }
+  // 返回未提交列表
+  async cltUnsubmitList(cltId: string, groupId: string): Promise<User[]> {
+    // 获取已提交用户的ID
+    const submittedUsers: Types.ObjectId[] = [];
+    const tmpData = await this.postModel
+      .find({ desclt: Types.ObjectId(cltId), groups: Types.ObjectId(groupId) })
+      .populate({ path: 'creator', select: '_id' });
+    tmpData.forEach(post => {
+      const creator = post.creator as any;
+      submittedUsers.push(creator._id);
+    });
+
+    // 返回未提交用户列表
+    return await this.userModel
+      .find({ groups: Types.ObjectId(groupId), _id: { $nin: submittedUsers } })
+      .select('username nickname');
+  }
+  // 返回该组全部用户
+  async cltNeedList(groupId: string): Promise<User[]> {
+    return await this.userModel
+      .find({ groups: Types.ObjectId(groupId) })
+      .select('username nickname');
+  }
 }

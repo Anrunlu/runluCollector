@@ -1,4 +1,11 @@
-import { Controller, Get, Param, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  UseGuards,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { QueryService } from './query.service';
 import { Org } from '@libs/db/models/org.model';
@@ -9,6 +16,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import { User } from '@libs/db/models/user.model';
 import { Types } from 'mongoose';
 import { Group } from '@libs/db/models/group.model';
+import { Post } from '@libs/db/models/post.model';
 
 @ApiTags('查询接口')
 @ApiBearerAuth()
@@ -53,5 +61,28 @@ export class QueryController {
     @Query('cltId') cltId: string,
   ): Promise<Group[]> {
     return this.queryService.isSubmitted(cltId, user.id);
+  }
+
+  @Get('subInfo/:id')
+  @UseGuards(AuthGuard('UserJwt'))
+  @ApiOperation({ summary: '查询给定收集的详细提交信息' })
+  getCltSubInfo(
+    @Param('id') cltId: string,
+    @Query('groupId') groupId: string,
+    @Query('type') type: string,
+  ): Promise<Post[] | User[]> {
+    if (!groupId) {
+      throw new BadRequestException();
+    }
+    if (type === 'submitted') {
+      // 已提交列表
+      return this.queryService.cltSubmittedList(cltId, groupId);
+    } else if (type === 'unSubmitted') {
+      // 未提交列表
+      return this.queryService.cltUnsubmitList(cltId, groupId);
+    } else {
+      // 全部
+      return this.queryService.cltNeedList(groupId);
+    }
   }
 }
