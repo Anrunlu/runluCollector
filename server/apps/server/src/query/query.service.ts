@@ -44,8 +44,39 @@ export class QueryService {
     return org;
   }
 
-  // 查询任务列表
-  async myTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
+  /* 查询任务列表 */
+  // 查询进行中的任务
+  async myUnderwayTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
+    return await this.cltModel
+      .find({ groups: { $in: groups }, endtime: { $gt: new Date() } })
+      .populate([
+        {
+          path: 'groups',
+          select: 'name',
+        },
+        {
+          path: 'creator',
+          select: 'nickname',
+        },
+      ]);
+  }
+  // 查询已截止的任务
+  async myClosedTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
+    return await this.cltModel
+      .find({ groups: { $in: groups }, endtime: { $lte: new Date() } })
+      .populate([
+        {
+          path: 'groups',
+          select: 'name',
+        },
+        {
+          path: 'creator',
+          select: 'nickname',
+        },
+      ]);
+  }
+  // 查询已截止的任务
+  async myAllTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
     return await this.cltModel.find({ groups: { $in: groups } }).populate([
       {
         path: 'groups',

@@ -40,8 +40,20 @@ export class QueryController {
   @Get('tasklist')
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取收集任务列表' })
-  getMyTasks(@CurrentUser() user: DocumentType<User>): Promise<Collection[]> {
-    return this.queryService.myTasks(user.groups as Types.ObjectId[]);
+  getMyTasks(
+    @CurrentUser() user: DocumentType<User>,
+    @Query('type') type: string,
+  ): Promise<Collection[]> {
+    if (type === 'underway') {
+      // 进行中
+      return this.queryService.myUnderwayTasks(user.groups as Types.ObjectId[]);
+    } else if (type === 'closed') {
+      // 已截止
+      return this.queryService.myClosedTasks(user.groups as Types.ObjectId[]);
+    } else {
+      // 所有
+      return this.queryService.myAllTasks(user.groups as Types.ObjectId[]);
+    }
   }
 
   @Get('myAccessableGroups')
