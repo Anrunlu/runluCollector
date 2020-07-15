@@ -5,6 +5,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { RegisterDto } from './dto/register.dto';
 import { compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,8 +35,12 @@ export class AuthService {
       token: this.jwtService.sign(userId),
     };
   }
-
+  // 获取用户详细信息
   async getUser(id: string): Promise<User> {
     return await this.userModel.findById(id).populate('ugroups');
+  }
+  // 修改用户信息
+  async setUserBaseInfo(id: string, userDto: UserDto): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(id, userDto);
   }
 }

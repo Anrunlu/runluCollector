@@ -10,7 +10,9 @@ export class PostsService {
   constructor(@InjectModel(Post) private readonly postModel: ModelType<Post>) {}
 
   async findMyPosts(userId: string): Promise<Post[]> {
-    return await this.postModel.find({ creator: Types.ObjectId(userId) });
+    return await this.postModel
+      .find({ creator: Types.ObjectId(userId) })
+      .populate({ path: 'desclt', select: 'title' });
   }
 
   async detail(id: string): Promise<Post> {

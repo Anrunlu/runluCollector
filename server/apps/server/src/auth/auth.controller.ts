@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Controller, Body, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Body, Get, Post, UseGuards, Put } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '@libs/db/models/user.model';
@@ -8,6 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { LoginDto } from './dto/login.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { DocumentType } from '@typegoose/typegoose';
+import { UserDto } from './dto/user.dto';
 
 @Controller('auth')
 @ApiTags('用户鉴权')
@@ -33,5 +34,16 @@ export class AuthController {
   @UseGuards(AuthGuard('UserJwt'))
   user(@CurrentUser() user: DocumentType<User>) {
     return user;
+  }
+
+  @Put('user')
+  @ApiOperation({ summary: '修改用户基本信息' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('UserJwt'))
+  updateUserBaseInfo(
+    @CurrentUser() user: DocumentType<User>,
+    @Body() userDto: UserDto,
+  ) {
+    return this.authService.setUserBaseInfo(user.id, userDto);
   }
 }
