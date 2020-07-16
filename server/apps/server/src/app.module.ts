@@ -6,9 +6,10 @@ import { CommonModule } from '@app/common';
 import { QueryModule } from './query/query.module';
 import { CollectionsModule } from './collections/collections.module';
 import { PostsModule } from './posts/posts.module';
+import { GroupsModule } from './groups/groups.module';
 
 @Module({
-  imports: [CommonModule, AuthModule, QueryModule, CollectionsModule, PostsModule],
+  imports: [CommonModule, AuthModule, QueryModule, CollectionsModule, PostsModule, GroupsModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -19,7 +19,6 @@ import { Group } from '@libs/db/models/group.model';
 import { Post } from '@libs/db/models/post.model';
 
 @ApiTags('查询接口')
-@ApiBearerAuth()
 @Controller('query')
 export class QueryController {
   constructor(private readonly queryService: QueryService) {}
@@ -31,6 +30,7 @@ export class QueryController {
   }
 
   @Get('org/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取组织详细信息' })
   getOrgDetail(@Param('id') id: string): Promise<any> {
@@ -38,6 +38,7 @@ export class QueryController {
   }
 
   @Get('tasklist')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取收集任务列表' })
   getMyTasks(
@@ -57,6 +58,7 @@ export class QueryController {
   }
 
   @Get('myAccessableGroups')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '获取用户创建和管理的群组列表' })
   getMyAccessableGroups(
@@ -66,6 +68,7 @@ export class QueryController {
   }
 
   @Get('isSubmitted')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '查询是否已提交过' })
   isSubmited(
@@ -76,6 +79,7 @@ export class QueryController {
   }
 
   @Get('subInfo/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '查询给定收集的详细提交信息' })
   getCltSubInfo(
