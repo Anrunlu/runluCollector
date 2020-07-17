@@ -143,4 +143,16 @@ export class QueryService {
       .find({ groups: Types.ObjectId(groupId) })
       .select('username nickname');
   }
+
+  /* 查询群组是否存在（用于加入群组和创建群组） */
+  async isGroupExist(groupName: string): Promise<any> {
+    const res = await this.groupModel
+      .find({ name: groupName })
+      .populate({ path: 'creator', select: 'nickname' });
+    if (res.length > 0) {
+      return { exist: true, group: res[0] };
+    } else {
+      return { exist: false };
+    }
+  }
 }

@@ -5,12 +5,14 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { Types } from 'mongoose';
 import { User } from '@libs/db/models/user.model';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { Collection } from '@libs/db/models/collection.model';
 
 @Injectable()
 export class GroupsService {
   constructor(
     @InjectModel(Group) private readonly groupModel: ModelType<Group>,
     @InjectModel(User) private readonly userModel: ModelType<User>,
+    @InjectModel(Collection) private readonly cltModel: ModelType<Collection>,
   ) {}
 
   /* 获取群组列表 */
@@ -44,6 +46,55 @@ export class GroupsService {
     return createdGroup.save();
   }
 
+  /* 加入群组 */
+  async join(userId: Types.ObjectId, groupId: Types.ObjectId): Promise<any> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $addToSet: { groups: groupId },
+    });
+    return { success: true };
+  }
+
+  /* 设置管理员 */
+  async setManager(
+    groupOwnnerId: Types.ObjectId,
+    groupId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<any> {
+    await this.groupModel.findOneAndUpdate(
+      { $and: [{ _id: groupId }, { creator: groupOwnnerId }] },
+      {
+        $addToSet: { manager: userId },
+      },
+    );
+    return { success: true };
+  }
+
+  /* 取消管理员 */
+  async removeManager(
+    groupOwnnerId: Types.ObjectId,
+    groupId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<any> {
+    await this.groupModel.findOneAndUpdate(
+      { $and: [{ _id: groupId }, { creator: groupOwnnerId }] },
+      {
+        $pull: { manager: userId },
+      },
+    );
+    return { success: true };
+  }
+
+  /* 退出群组 */
+  async leave(userId: Types.ObjectId, groupId: Types.ObjectId): Promise<any> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $pull: { groups: groupId },
+    });
+    await this.groupModel.findByIdAndUpdate(groupId, {
+      $pull: { manager: userId },
+    });
+    return { success: true };
+  }
+
   /* 更新群组 */
   async update(id: string, updateGroupDto: CreateGroupDto): Promise<Group> {
     return await this.groupModel.findByIdAndUpdate(id, updateGroupDto, {
@@ -51,9 +102,25 @@ export class GroupsService {
     });
   }
 
-  /* 删除群组 */
-  async remove(id: string): Promise<any> {
-    await this.groupModel.findByIdAndDelete(id);
+  /* 解散群组 */
+  async remove(groupId: Types.ObjectId): Promise<any> {
+    // 从用户表中解除关联
+    await this.userModel.updateMany(
+      { groups: groupId },
+      { $pull: { groups: groupId } },
+    );
+
+    // 删除直接相关的收集
+    await this.cltModel.deleteMany({ groups: [groupId] });
+
+    // 从收集表中解除关联
+    await this.cltModel.updateMany(
+      { groups: groupId },
+      { $pull: { groups: groupId } },
+    );
+
+    // 从群组表中删除记录
+    await this.groupModel.findByIdAndDelete(groupId);
     return { success: true };
   }
 }
