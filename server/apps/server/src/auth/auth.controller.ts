@@ -9,6 +9,7 @@ import { LoginDto } from './dto/login.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { DocumentType } from '@typegoose/typegoose';
 import { UserDto } from './dto/user.dto';
+import { ChgPasswordDto } from './dto/chgpassword.dto';
 
 @Controller('auth')
 @ApiTags('用户鉴权')
@@ -45,5 +46,16 @@ export class AuthController {
     @Body() userDto: UserDto,
   ) {
     return this.authService.setUserBaseInfo(user.id, userDto);
+  }
+
+  @Put('chgPassword')
+  @ApiOperation({ summary: '修改密码' })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('UserJwt'))
+  changePassword(
+    @CurrentUser() user: DocumentType<User>,
+    @Body() chgPasswordDto: ChgPasswordDto,
+  ) {
+    return this.authService.changePassword(user.id, chgPasswordDto);
   }
 }
