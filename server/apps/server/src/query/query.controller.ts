@@ -109,4 +109,17 @@ export class QueryController {
   isGroupExist(@Query('groupName') groupName: string): any {
     return this.queryService.isGroupExist(groupName);
   }
+
+  @Get('isUsernameExist')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '查询用户名是否存在（用于注册）' })
+  isUsernameExist(
+    @Query('orgId') orgId: string,
+    @Query('username') username: string,
+  ): any {
+    return this.queryService.isUsernameExist(
+      (orgId as unknown) as Types.ObjectId,
+      username,
+    );
+  }
 }

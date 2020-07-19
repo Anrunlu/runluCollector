@@ -155,4 +155,16 @@ export class QueryService {
       return { exist: false };
     }
   }
+
+  /* 查询用户名是否存在（用于注册） */
+  async isUsernameExist(orgId: Types.ObjectId, username: string): Promise<any> {
+    const res = await this.userModel.find({
+      $and: [{ org: orgId }, { username: username }],
+    });
+    if (res.length > 0) {
+      return { exist: true };
+    } else {
+      return { exist: false };
+    }
+  }
 }
