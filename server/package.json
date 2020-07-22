@@ -27,7 +27,9 @@
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/platform-socket.io": "^7.3.2",
     "@nestjs/swagger": "^4.5.11",
+    "@nestjs/websockets": "^7.3.2",
     "@typegoose/typegoose": "^7.2.0",
     "bcrypt": "^5.0.0",
     "mongoose": "^5.9.20",
@@ -35,6 +37,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "qiniu": "^7.3.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
@@ -52,6 +55,7 @@
     "@types/passport": "^1.0.3",
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
+    "@types/socket.io": "^2.1.10",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",
@@ -88,7 +92,9 @@
       "@libs/db/(.*)": "<rootDir>/libs/db/src/$1",
       "@libs/db": "<rootDir>/libs/db/src",
       "@app/common/(.*)": "<rootDir>/libs/common/src/$1",
-      "@app/common": "<rootDir>/libs/common/src"
+      "@app/common": "<rootDir>/libs/common/src",
+      "@app/qiniu/(.*)": "<rootDir>/libs/qiniu/src/$1",
+      "@app/qiniu": "<rootDir>/libs/qiniu/src"
     }
   }
 }

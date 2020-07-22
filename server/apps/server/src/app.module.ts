@@ -7,10 +7,20 @@ import { QueryModule } from './query/query.module';
 import { CollectionsModule } from './collections/collections.module';
 import { PostsModule } from './posts/posts.module';
 import { GroupsModule } from './groups/groups.module';
+import { AppGateway } from './app.gateway';
+import { QiniuModule } from './qiniu/qiniu.module';
 
 @Module({
-  imports: [CommonModule, AuthModule, QueryModule, CollectionsModule, PostsModule, GroupsModule],
+  imports: [
+    CommonModule,
+    AuthModule,
+    QueryModule,
+    CollectionsModule,
+    PostsModule,
+    GroupsModule,
+    QiniuModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppGateway],
 })
 export class AppModule {}
