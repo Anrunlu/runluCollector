@@ -14,6 +14,15 @@ export class QiniuService {
     @InjectModel(Collection) private readonly cltModel: ModelType<Collection>,
   ) {}
 
+  /* 创建七牛 BucketManager对象 用于管理文件 */
+  createBucketManager(): any {
+    const config = new qiniu.conf.Config();
+    //config.useHttpsDomain = true;
+    (config as any).zone = qiniu.zone.Zone_z0;
+    const bucketManager = new qiniu.rs.BucketManager(getMac(), config);
+    return bucketManager;
+  }
+
   /* 生成上传token */
   generateUploadToken(): any {
     const options = {
@@ -22,6 +31,28 @@ export class QiniuService {
     const putPolicy = new qiniu.rs.PutPolicy(options);
     const uploadToken = putPolicy.uploadToken(getMac());
     return { uploadToken };
+  }
+
+  /* 删除单个文件 */
+  async deleteSingleFile(filekey: string): Promise<any> {
+    const bucketManager = this.createBucketManager();
+    return await new Promise((resolve, reject) => {
+      bucketManager.delete(srcBucket, filekey, (err, respBody, respInfo) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+          //throw err;
+        }
+        if (respInfo.statusCode === 200) {
+          resolve({ success: true });
+        } else {
+          reject({
+            code: respInfo.statusCode,
+            body: respBody,
+          });
+        }
+      });
+    });
   }
 
   /* zip打包 */
