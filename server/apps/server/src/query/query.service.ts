@@ -117,7 +117,7 @@ export class QueryService {
   // 返回已提交列表
   async cltSubmittedList(cltId: string, groupId: string): Promise<Post[]> {
     return await this.postModel
-      .find({ desclt: Types.ObjectId(cltId), groups: Types.ObjectId(groupId) })
+      .find({ desclt: Types.ObjectId(cltId) })
       .populate({ path: 'creator', select: 'username nickname' });
   }
   // 返回未提交列表
@@ -125,7 +125,7 @@ export class QueryService {
     // 获取已提交用户的ID
     const submittedUsers: Types.ObjectId[] = [];
     const tmpData = await this.postModel
-      .find({ desclt: Types.ObjectId(cltId), groups: Types.ObjectId(groupId) })
+      .find({ desclt: Types.ObjectId(cltId) })
       .populate({ path: 'creator', select: '_id' });
     tmpData.forEach(post => {
       const creator = post.creator as any;
