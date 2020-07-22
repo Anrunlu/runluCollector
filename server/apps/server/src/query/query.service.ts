@@ -115,6 +115,7 @@ export class QueryService {
 
   /* 查询给定收集的给定组的详细提交信息 */
   // 返回已提交列表
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async cltSubmittedList(cltId: string, groupId: string): Promise<Post[]> {
     return await this.postModel
       .find({ desclt: Types.ObjectId(cltId) })
