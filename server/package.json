@@ -33,6 +33,7 @@
     "@typegoose/typegoose": "^7.2.0",
     "bcrypt": "^5.0.0",
     "mongoose": "^5.9.20",
+    "nest-emitter": "^1.1.1",
     "nestjs-typegoose": "^7.1.28",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",

@@ -9,6 +9,8 @@ import { PostsModule } from './posts/posts.module';
 import { GroupsModule } from './groups/groups.module';
 import { AppGateway } from './app.gateway';
 import { QiniuModule } from './qiniu/qiniu.module';
+import { NestEmitterModule } from 'nest-emitter';
+import { EventEmitter } from 'events';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { QiniuModule } from './qiniu/qiniu.module';
     PostsModule,
     GroupsModule,
     QiniuModule,
+    NestEmitterModule.forRoot(new EventEmitter()),
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

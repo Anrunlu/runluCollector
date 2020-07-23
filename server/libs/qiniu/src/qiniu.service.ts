@@ -1,18 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as qiniu from 'qiniu';
 import { getMac, srcBucket, qiniuCDN } from './qiniu.auth';
 import { InjectModel } from 'nestjs-typegoose';
 import { Collection } from '@libs/db/models/collection.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { Post } from '@libs/db/models/post.model';
-import path from 'path';
-import fs from 'fs';
+import { InjectEventEmitter } from 'nest-emitter';
+import { MyEventEmitter } from 'apps/server/src/app.events';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
-export class QiniuService {
+export class QiniuService implements OnModuleInit {
   constructor(
     @InjectModel(Collection) private readonly cltModel: ModelType<Collection>,
+    @InjectEventEmitter() private readonly emitter: MyEventEmitter,
   ) {}
+
+  onModuleInit(): void {
+    this.emitter.on('mkzipStart', async msg => await this.onMkzipStart(msg));
+  }
 
   /* 创建七牛 BucketManager对象 用于管理文件 */
   createBucketManager(): any {
@@ -101,8 +108,14 @@ export class QiniuService {
       urlAndAlias += '\n';
     });
 
+    // 创建mkzip目录
+    if (!fs.existsSync(path.join('mkzip'))) {
+      fs.mkdirSync(path.join('mkzip'));
+      console.log('创建mkzip目录成功');
+    }
     // 在mkzip目录生成索引文件
     const indexFilePath = path.join('mkzip', `${Date.now()}-${cltId}.txt`);
+    console.log(indexFilePath);
     fs.writeFileSync(indexFilePath, urlAndAlias, { encoding: 'utf-8' });
 
     // 上传索引文件，并在云端执行打包操作
@@ -134,5 +147,12 @@ export class QiniuService {
       );
     });
     return await put_file;
+  }
+
+  /* 监听打包开始事件 */
+  async onMkzipStart(cltId: string): Promise<void> {
+    console.log('收到信号，开始打包');
+    const res = await this.mkzip(cltId);
+    console.log(res);
   }
 }
