@@ -33,6 +33,9 @@ export class User {
   nickname: string;
 
   @prop()
+  avatar: string;
+
+  @prop()
   email: string;
 
   @prop()

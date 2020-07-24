@@ -33,9 +33,9 @@ export class GroupsService {
   /* 群组详情 */
   async detail(id: string): Promise<Group> {
     return await this.groupModel.findById(id).populate([
-      { path: 'creator', select: 'nickname' },
-      { path: 'manager', select: 'nickname' },
-      { path: 'members', select: 'username nickname' },
+      { path: 'creator', select: 'nickname avatar' },
+      { path: 'manager', select: 'nickname avatar' },
+      { path: 'members', select: 'username nickname avatar' },
       { path: 'org', select: 'name' },
     ]);
   }

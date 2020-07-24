@@ -25,9 +25,12 @@ export class CollectionsService {
 
   async getDetail(id: string): Promise<Collection> {
     return await this.cltModel.findById(id).populate([
-      { path: 'creator', select: 'nickname' },
+      { path: 'creator', select: 'nickname avatar' },
       { path: 'groups', select: 'name' },
-      { path: 'posts', populate: { path: 'creator', select: 'nickname' } },
+      {
+        path: 'posts',
+        populate: { path: 'creator', select: 'nickname avatar' },
+      },
     ]);
   }
 

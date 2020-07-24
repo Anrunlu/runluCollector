@@ -56,7 +56,7 @@ export class QueryService {
         },
         {
           path: 'creator',
-          select: 'nickname',
+          select: 'nickname avatar',
         },
       ]);
   }
@@ -71,7 +71,7 @@ export class QueryService {
         },
         {
           path: 'creator',
-          select: 'nickname',
+          select: 'nickname avatar',
         },
       ]);
   }
@@ -84,7 +84,7 @@ export class QueryService {
       },
       {
         path: 'creator',
-        select: 'nickname',
+        select: 'nickname avatar',
       },
     ]);
   }
@@ -119,7 +119,7 @@ export class QueryService {
   async cltSubmittedList(cltId: string, groupId: string): Promise<Post[]> {
     return await this.postModel
       .find({ desclt: Types.ObjectId(cltId) })
-      .populate({ path: 'creator', select: 'username nickname' });
+      .populate({ path: 'creator', select: 'username nickname avatar' });
   }
   // 返回未提交列表
   async cltUnsubmitList(cltId: string, groupId: string): Promise<User[]> {
@@ -136,13 +136,13 @@ export class QueryService {
     // 返回未提交用户列表
     return await this.userModel
       .find({ groups: Types.ObjectId(groupId), _id: { $nin: submittedUsers } })
-      .select('username nickname');
+      .select('username nickname avatar');
   }
   // 返回该组全部用户
   async cltNeedList(groupId: string): Promise<User[]> {
     return await this.userModel
       .find({ groups: Types.ObjectId(groupId) })
-      .select('username nickname');
+      .select('username nickname avatar');
   }
 
   /* 查询群组是否存在（用于加入群组和创建群组） */
