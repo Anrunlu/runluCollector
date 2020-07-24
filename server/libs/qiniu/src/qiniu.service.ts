@@ -18,7 +18,10 @@ export class QiniuService implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.emitter.on('mkzipStart', async msg => await this.onMkzipStart(msg));
+    this.emitter.on(
+      'mkzipStart',
+      async msg => await this.onMkzipStart(msg.cltId, msg.renameRule),
+    );
   }
 
   /* 创建七牛 BucketManager对象 用于管理文件 */
@@ -63,7 +66,7 @@ export class QiniuService implements OnModuleInit {
   }
 
   /* zip打包 */
-  async mkzip(cltId: string): Promise<any> {
+  async mkzip(cltId: string, renameRule: number): Promise<any> {
     // 定义zip文件名
     const zipFileName = `${cltId}-${Date.now()}.zip`;
     const savedZipEntry = qiniu.util.urlsafeBase64Encode(
@@ -86,27 +89,58 @@ export class QiniuService implements OnModuleInit {
 
     // 拼装数据写入索引文件
     // files不能超过三千个
-    const { posts } = await this.cltModel.findById(cltId).setOptions({
+    const cltModel = await this.cltModel.findById(cltId).setOptions({
       populate: {
         path: 'posts',
         select: '+fileUrl',
         populate: { path: 'creator' },
       },
     });
+    const { title, posts } = cltModel;
     console.log('已获取打包文件列表');
-
     let urlAndAlias = '';
-    posts.forEach(post => {
-      urlAndAlias += `/url/${qiniu.util.urlsafeBase64Encode(
-        qiniuCDN + '/' + escape((post as Post).fileUrl.split('/').pop()),
-      )}`;
-      urlAndAlias += `/alias/${qiniu.util.urlsafeBase64Encode(
-        `${(post as any).creator.username}-${(post as any).creator.nickname}.${
-          (post as Post).filetype
-        }`,
-      )}`;
-      urlAndAlias += '\n';
-    });
+
+    switch (renameRule) {
+      case 1:
+        posts.forEach(post => {
+          urlAndAlias += `/url/${qiniu.util.urlsafeBase64Encode(
+            qiniuCDN + '/' + escape((post as Post).fileUrl.split('/').pop()),
+          )}`;
+          urlAndAlias += `/alias/${qiniu.util.urlsafeBase64Encode(
+            `${(post as any).creator.username}-${
+              (post as any).creator.nickname
+            }.${(post as Post).filetype}`,
+          )}`;
+          urlAndAlias += '\n';
+        });
+        break;
+      case 2:
+        posts.forEach(post => {
+          urlAndAlias += `/url/${qiniu.util.urlsafeBase64Encode(
+            qiniuCDN + '/' + escape((post as Post).fileUrl.split('/').pop()),
+          )}`;
+          urlAndAlias += `/alias/${qiniu.util.urlsafeBase64Encode(
+            `${title}-${(post as any).creator.username}-${
+              (post as any).creator.nickname
+            }.${(post as Post).filetype}`,
+          )}`;
+          urlAndAlias += '\n';
+        });
+        break;
+      case 3:
+        posts.forEach(post => {
+          urlAndAlias += `/url/${qiniu.util.urlsafeBase64Encode(
+            qiniuCDN + '/' + escape((post as Post).fileUrl.split('/').pop()),
+          )}`;
+          urlAndAlias += `/alias/${qiniu.util.urlsafeBase64Encode(
+            `${(post as any).creator.username}-${
+              (post as any).creator.nickname
+            }-${(post as any).origname}`,
+          )}`;
+          urlAndAlias += '\n';
+        });
+        break;
+    }
 
     // 创建mkzip目录
     if (!fs.existsSync(path.join('mkzip'))) {
@@ -114,8 +148,10 @@ export class QiniuService implements OnModuleInit {
       console.log('创建mkzip目录成功');
     }
     // 在mkzip目录生成索引文件
-    const indexFilePath = path.join('mkzip', `${Date.now()}-${cltId}.txt`);
-    console.log(indexFilePath);
+    const indexFilePath = path.join(
+      'mkzip',
+      `mkzip-${Date.now()}-${cltId}.txt`,
+    );
     fs.writeFileSync(indexFilePath, urlAndAlias, { encoding: 'utf-8' });
 
     // 上传索引文件，并在云端执行打包操作
@@ -150,9 +186,9 @@ export class QiniuService implements OnModuleInit {
   }
 
   /* 监听打包开始事件 */
-  async onMkzipStart(cltId: string): Promise<void> {
-    console.log('收到信号，开始打包');
-    const res = await this.mkzip(cltId);
+  async onMkzipStart(cltId: string, renameRule: number): Promise<void> {
+    console.log('收到信号，开始打包', cltId, renameRule);
+    const res = await this.mkzip(cltId, renameRule);
     console.log(res);
   }
 }
