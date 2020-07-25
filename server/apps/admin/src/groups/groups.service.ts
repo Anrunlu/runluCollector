@@ -3,13 +3,20 @@ import { InjectModel } from 'nestjs-typegoose';
 import { Group } from '@libs/db/models/group.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class GroupsService {
   constructor(@InjectModel(Group) private groupModel: ModelType<Group>) {}
 
   async findAll(): Promise<Group[]> {
-    return await this.groupModel.find();
+    return await this.groupModel.find().populate('creator');
+  }
+
+  async findByOrg(orgId: string): Promise<Group[]> {
+    return await this.groupModel
+      .find({ org: Types.ObjectId(orgId) })
+      .select('name');
   }
 
   async detail(id: string): Promise<Group> {

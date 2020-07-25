@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
 } from '@nestjs/common';
 import { OrgsService } from './orgs.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -19,8 +20,8 @@ export class OrgsController {
 
   @Get()
   @ApiOperation({ summary: '显示组织列表' })
-  findAll(): Promise<Org[]> {
-    return this.orgsService.findAll();
+  findAll(@Query('type') type: string): Promise<Org[]> {
+    return this.orgsService.findAll(type);
   }
 
   @Get(':id')

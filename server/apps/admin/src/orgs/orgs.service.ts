@@ -8,8 +8,12 @@ import { CreateOrgDto } from './dto/create-org.dto';
 export class OrgsService {
   constructor(@InjectModel(Org) private readonly orgModel: ModelType<Org>) {}
 
-  async findAll(): Promise<Org[]> {
-    return await this.orgModel.find();
+  async findAll(type: string): Promise<Org[]> {
+    if (type === 'query') {
+      return await this.orgModel.find().select('name');
+    } else {
+      return await this.orgModel.find().populate('creator');
+    }
   }
 
   async detail(id: string): Promise<Org> {

@@ -6,6 +6,7 @@ import {
   Put,
   Post,
   Get,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { GroupsService } from './groups.service';
@@ -19,9 +20,16 @@ export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Get()
-  @ApiOperation({ summary: '显示群组列表' })
-  findAll(): Promise<Group[]> {
-    return this.groupsService.findAll();
+  @ApiOperation({ summary: '显示特定的群组列表' })
+  findAll(
+    @Query('type') type: string,
+    @Query('orgId') orgId: string,
+  ): Promise<Group[]> {
+    if (type === 'query') {
+      return this.groupsService.findByOrg(orgId);
+    } else {
+      return this.groupsService.findAll();
+    }
   }
 
   @Get(':id')

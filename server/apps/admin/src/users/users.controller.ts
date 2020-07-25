@@ -6,6 +6,7 @@ import {
   Put,
   Body,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,9 +20,33 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @ApiOperation({ summary: '显示用户列表' })
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  @ApiOperation({ summary: '显示特定的用户列表' })
+  find(
+    @Query('org') orgId: string,
+    @Query('group') groupId: string,
+    @Query('username') username: string,
+    @Query('email') email: string,
+  ): Promise<User[]> {
+    if (orgId === 'all') {
+      // return 所有用户
+      return this.usersService.findAll();
+    } else {
+      if (email) {
+        // return 特定email用户 in 组织
+        return this.usersService.findByEmail(email);
+      } else if (groupId) {
+        if (username) {
+          // return 特定username用户 in 组织
+          return this.usersService.findByOrgAndUsername(orgId, username);
+        } else {
+          // return 所有用户 in 群组 in 组织
+          return this.usersService.findByGroup(groupId);
+        }
+      } else {
+        // return 所有用户 in 组织
+        return this.usersService.findByOrg(orgId);
+      }
+    }
   }
 
   @Get(':id')
