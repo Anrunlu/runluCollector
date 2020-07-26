@@ -12,7 +12,51 @@ export class OrgsService {
     if (type === 'query') {
       return await this.orgModel.find().select('name');
     } else {
-      return await this.orgModel.find().populate('creator');
+      // 聚合查询该组织所属用户、群组、收集和文件的数量
+      return await this.orgModel.aggregate([
+        {
+          $lookup: {
+            from: 'groups',
+            localField: '_id',
+            foreignField: 'org',
+            as: 'groups',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: '_id',
+            foreignField: 'org',
+            as: 'users',
+          },
+        },
+        {
+          $lookup: {
+            from: 'collections',
+            localField: '_id',
+            foreignField: 'org',
+            as: 'collections',
+          },
+        },
+        {
+          $lookup: {
+            from: 'posts',
+            localField: '_id',
+            foreignField: 'org',
+            as: 'posts',
+          },
+        },
+        {
+          $project: {
+            name: 1,
+            createdAt: 1,
+            numOfUsers: { $size: '$users' },
+            numOfGroups: { $size: '$groups' },
+            numOfClts: { $size: '$collections' },
+            numOfPosts: { $size: '$posts' },
+          },
+        },
+      ]);
     }
   }
 

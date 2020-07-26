@@ -27,6 +27,8 @@ export class GroupsController {
   ): Promise<Group[]> {
     if (type === 'query') {
       return this.groupsService.findByOrg(orgId);
+    } else if (type === 'byOrgWithDetail') {
+      return this.groupsService.findByOrgWithDetail(orgId);
     } else {
       return this.groupsService.findAll();
     }

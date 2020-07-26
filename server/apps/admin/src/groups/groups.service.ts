@@ -10,7 +10,17 @@ export class GroupsService {
   constructor(@InjectModel(Group) private groupModel: ModelType<Group>) {}
 
   async findAll(): Promise<Group[]> {
-    return await this.groupModel.find().populate('creator');
+    return await this.groupModel.find().populate([
+      { path: 'creator', select: 'nickname avatar' },
+      { path: 'org', select: 'name' },
+    ]);
+  }
+
+  async findByOrgWithDetail(orgId: string): Promise<Group[]> {
+    return await this.groupModel.find({ org: Types.ObjectId(orgId) }).populate([
+      { path: 'creator', select: 'nickname avatar' },
+      { path: 'org', select: 'name' },
+    ]);
   }
 
   async findByOrg(orgId: string): Promise<Group[]> {
