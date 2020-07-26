@@ -6,6 +6,7 @@ import {
   Put,
   Post,
   Get,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
@@ -19,9 +20,23 @@ export class CollectionsController {
   constructor(private readonly cltsService: CollectionsService) {}
 
   @Get()
-  @ApiOperation({ summary: '显示收集列表' })
-  findAll(): Promise<Collection[]> {
-    return this.cltsService.findAll();
+  @ApiOperation({ summary: '显示特定的收集列表' })
+  findAll(
+    @Query('org') orgId: string,
+    @Query('group') groupId: string,
+  ): Promise<Collection[]> {
+    if (orgId === 'all') {
+      // return 所有收集
+      return this.cltsService.findAll();
+    } else {
+      if (groupId) {
+        // return 所有收集 in 群组 in 组织
+        return this.cltsService.findByGroup(groupId);
+      } else {
+        // return 所有收集 in 组织
+        return this.cltsService.findByOrg(orgId);
+      }
+    }
   }
 
   @Get(':id')
