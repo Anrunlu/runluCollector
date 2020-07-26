@@ -8,6 +8,9 @@ import { AdminsModule } from './admins/admins.module';
 import { CollectionsModule } from './collections/collections.module';
 import { PostsModule } from './posts/posts.module';
 import { CommonModule } from 'libs/common/src';
+import { QiniuModule } from './qiniu/qiniu.module';
+import { NestEmitterModule } from 'nest-emitter';
+import { EventEmitter } from 'events';
 
 @Module({
   imports: [
@@ -18,6 +21,8 @@ import { CommonModule } from 'libs/common/src';
     AdminsModule,
     CollectionsModule,
     PostsModule,
+    QiniuModule,
+    NestEmitterModule.forRoot(new EventEmitter()),
   ],
   controllers: [AppController],
   providers: [AppService],
