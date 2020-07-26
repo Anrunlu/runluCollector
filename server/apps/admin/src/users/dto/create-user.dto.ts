@@ -4,8 +4,8 @@ import { Group } from '@libs/db/models/group.model';
 import { Org } from '@libs/db/models/org.model';
 
 export class CreateUserDto {
-  // @ApiProperty({ description: '组织id', example: '曲阜师范大学' })
-  // org: Ref<Org>;
+  @ApiProperty({ description: '组织id', example: '曲阜师范大学' })
+  org: Ref<Org>;
 
   @ApiProperty({ description: '学工号', example: '1001' })
   username: string;
@@ -24,4 +24,10 @@ export class CreateUserDto {
 
   @ApiProperty({ description: '组id', example: ['5ef02ba109afba5b745c55af'] })
   groups?: Ref<Group>[];
+
+  @ApiProperty({
+    description: '头像URL',
+    example: 'https://cdn.quasar.dev/img/boy-avatar.png',
+  })
+  avatar?: string;
 }
