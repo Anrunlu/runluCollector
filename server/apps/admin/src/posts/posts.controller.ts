@@ -6,6 +6,7 @@ import {
   Put,
   Post,
   Get,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PostsService } from './posts.service';
@@ -16,24 +17,38 @@ import { CreatePostDto } from './dto/create-post.dto';
 @ApiTags('文件管理')
 @ApiBearerAuth()
 export class PostsController {
-  constructor(private readonly cltsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  @ApiOperation({ summary: '显示文件列表' })
-  findAll(): Promise<PostFile[]> {
-    return this.cltsService.findAll();
+  @ApiOperation({ summary: '显示特定的文件列表' })
+  findAll(
+    @Query('org') orgId: string,
+    @Query('group') groupId: string,
+  ): Promise<PostFile[]> {
+    if (orgId === 'all') {
+      // return 所有文件
+      return this.postsService.findAll();
+    } else {
+      if (groupId) {
+        // return 所有文件 in 群组 in 组织
+        return this.postsService.findByGroup(groupId);
+      } else {
+        // return 所有文件 in 组织
+        return this.postsService.findByOrg(orgId);
+      }
+    }
   }
 
   @Get(':id')
   @ApiOperation({ summary: '显示文件详情' })
   detail(@Param('id') id: string): Promise<PostFile> {
-    return this.cltsService.detail(id);
+    return this.postsService.detail(id);
   }
 
   @Post()
   @ApiOperation({ summary: '创建新文件' })
   create(@Body() createPostDto: CreatePostDto): Promise<PostFile> {
-    return this.cltsService.create(createPostDto);
+    return this.postsService.create(createPostDto);
   }
 
   @Put(':id')
@@ -42,12 +57,12 @@ export class PostsController {
     @Param('id') id: string,
     @Body() updatePostDto: CreatePostDto,
   ): Promise<PostFile> {
-    return this.cltsService.update(id, updatePostDto);
+    return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: '删除文件' })
   remove(@Param('id') id: string): Promise<any> {
-    return this.cltsService.remove(id);
+    return this.postsService.remove(id);
   }
 }

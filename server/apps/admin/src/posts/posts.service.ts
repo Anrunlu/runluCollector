@@ -3,13 +3,36 @@ import { InjectModel } from 'nestjs-typegoose';
 import { Post } from '@libs/db/models/post.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { CreatePostDto } from './dto/create-post.dto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class PostsService {
   constructor(@InjectModel(Post) private readonly postModel: ModelType<Post>) {}
 
   async findAll(): Promise<Post[]> {
-    return await this.postModel.find();
+    return await this.postModel.find().populate([
+      { path: 'org', select: 'name' },
+      { path: 'creator', select: 'nickname avatar' },
+      { path: 'desclt', select: 'title' },
+    ]);
+  }
+
+  async findByGroup(groupId: string): Promise<Post[]> {
+    return await this.postModel
+      .find({ groups: Types.ObjectId(groupId) })
+      .populate([
+        { path: 'org', select: 'name' },
+        { path: 'creator', select: 'nickname avatar' },
+        { path: 'desclt', select: 'title' },
+      ]);
+  }
+
+  async findByOrg(orgId: string): Promise<Post[]> {
+    return await this.postModel.find({ org: Types.ObjectId(orgId) }).populate([
+      { path: 'org', select: 'name' },
+      { path: 'creator', select: 'nickname avatar' },
+      { path: 'desclt', select: 'title' },
+    ]);
   }
 
   async detail(id: string): Promise<Post> {
