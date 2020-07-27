@@ -1,5 +1,4 @@
 import { prop, modelOptions, Ref } from '@typegoose/typegoose';
-import { Admin } from './admin.model';
 import { User } from './user.model';
 import { Notice } from './notic.model';
 import { Collection } from './collection.model';
