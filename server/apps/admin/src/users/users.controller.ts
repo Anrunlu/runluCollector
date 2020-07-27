@@ -32,14 +32,14 @@ export class UsersController {
       return this.usersService.findAll();
     } else {
       if (email) {
-        // return 特定email用户 in 组织
+        // return 特定email用户
         return this.usersService.findByEmail(email);
       } else if (groupId) {
         if (username) {
           // return 特定username用户 in 组织
           return this.usersService.findByOrgAndUsername(orgId, username);
         } else {
-          // return 所有用户 in 群组 in 组织
+          // return 所有用户 in 群组
           return this.usersService.findByGroup(groupId);
         }
       } else {

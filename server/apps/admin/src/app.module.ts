@@ -11,6 +11,7 @@ import { CommonModule } from 'libs/common/src';
 import { QiniuModule } from './qiniu/qiniu.module';
 import { NestEmitterModule } from 'nest-emitter';
 import { EventEmitter } from 'events';
+import { NoticesModule } from './notices/notices.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { EventEmitter } from 'events';
     PostsModule,
     QiniuModule,
     NestEmitterModule.forRoot(new EventEmitter()),
+    NoticesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

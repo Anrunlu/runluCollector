@@ -7,6 +7,9 @@ import { Org } from './models/org.model';
 import { Group } from './models/group.model';
 import { Collection } from './models/collection.model';
 import { Post } from './models/post.model';
+import { Notice } from './models/notic.model';
+import { Feedback } from './models/feedback.model';
+import { UserAction } from './models/user.action.model';
 
 const models = TypegooseModule.forFeature([
   Admin,
@@ -15,6 +18,9 @@ const models = TypegooseModule.forFeature([
   Group,
   Collection,
   Post,
+  Notice,
+  Feedback,
+  UserAction,
 ]);
 @Global()
 @Module({

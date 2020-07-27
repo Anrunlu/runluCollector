@@ -22,6 +22,9 @@ export class Notice {
   @prop({ refPath: 'receivertype' })
   receiver: Ref<Org | Group | User>;
 
+  @prop({ enum: ['published', 'draft'] })
+  status: string;
+
   @prop()
   title: string;
 
