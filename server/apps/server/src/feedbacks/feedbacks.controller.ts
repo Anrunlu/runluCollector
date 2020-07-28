@@ -6,13 +6,17 @@ import {
   Post,
   Body,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { Feedback } from '@libs/db/models/feedback.model';
 import { FeedbacksService } from './feedbacks.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateFeedbackDto } from './dto/feedback.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('feedbacks')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('UserJwt'))
 @ApiTags('用户反馈相关')
 export class FeedbacksController {
   constructor(private readonly feedbacksService: FeedbacksService) {}

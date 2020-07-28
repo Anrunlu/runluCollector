@@ -12,6 +12,7 @@ import { QiniuModule } from './qiniu/qiniu.module';
 import { NestEmitterModule } from 'nest-emitter';
 import { EventEmitter } from 'events';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { NoticesModule } from './notices/notices.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { FeedbacksModule } from './feedbacks/feedbacks.module';
     QiniuModule,
     NestEmitterModule.forRoot(new EventEmitter()),
     FeedbacksModule,
+    NoticesModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],
