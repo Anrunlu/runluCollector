@@ -19,6 +19,6 @@ export class Feedback {
   @prop()
   description: string;
 
-  @prop({ enum: ['read', 'accept'] })
+  @prop({ enum: ['pending', 'read', 'accept'], default: 'pending' })
   status: string;
 }
