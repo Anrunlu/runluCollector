@@ -9,6 +9,9 @@ export class CreateFeedbackDto {
   @ApiProperty({ description: '类型', example: 'bug' })
   type: string;
 
+  @ApiProperty({ description: '是否需要回复', example: true })
+  needreply: boolean;
+
   @ApiProperty({ description: '创建者id', example: 'xxx' })
   creator: Ref<User>;
 

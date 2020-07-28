@@ -13,6 +13,9 @@ export class Feedback {
   @prop({ enum: ['bug', 'feature'] })
   type: string;
 
+  @prop()
+  needreply: boolean;
+
   @prop({ ref: 'User' })
   creator: Ref<User>;
 
