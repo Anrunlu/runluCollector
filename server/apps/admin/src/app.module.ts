@@ -13,10 +13,12 @@ import { NestEmitterModule } from 'nest-emitter';
 import { EventEmitter } from 'events';
 import { NoticesModule } from './notices/notices.module';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     CommonModule,
+    AuthModule,
     UsersModule,
     OrgsModule,
     GroupsModule,

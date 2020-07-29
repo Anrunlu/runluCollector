@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { NoticesService } from './notices.service';
 import { Notice } from '@libs/db/models/notic.model';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
