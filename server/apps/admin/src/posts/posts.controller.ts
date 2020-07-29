@@ -7,14 +7,17 @@ import {
   Post,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { PostsService } from './posts.service';
 import { Post as PostFile } from '@libs/db/models/post.model';
 import { CreatePostDto } from './dto/create-post.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('posts')
 @ApiTags('文件管理')
+@UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}

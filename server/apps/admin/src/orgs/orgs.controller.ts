@@ -7,14 +7,18 @@ import {
   Param,
   Body,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { OrgsService } from './orgs.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Org } from '@libs/db/models/org.model';
 import { CreateOrgDto } from './dto/create-org.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('orgs')
 @ApiTags('组织管理')
+@UseGuards(AuthGuard('UserJwt'))
+@ApiBearerAuth()
 export class OrgsController {
   constructor(private readonly orgsService: OrgsService) {}
 

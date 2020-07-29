@@ -1,10 +1,21 @@
-import { Controller, Get, Param, Body, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Body,
+  Put,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { Feedback } from '@libs/db/models/feedback.model';
 import { FeedbacksService } from './feedbacks.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateFeedbackDto } from './dto/feedback.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('feedbacks')
+@UseGuards(AuthGuard('UserJwt'))
+@ApiBearerAuth()
 @ApiTags('用户反馈相关')
 export class FeedbacksController {
   constructor(private readonly feedbacksService: FeedbacksService) {}

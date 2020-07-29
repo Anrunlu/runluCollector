@@ -6,14 +6,17 @@ import {
   Put,
   Body,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Admin } from '@libs/db/models/admin.model';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('admins')
 @ApiTags('管理员管理')
+@UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}

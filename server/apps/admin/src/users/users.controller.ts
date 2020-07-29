@@ -7,14 +7,17 @@ import {
   Body,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { User } from '@libs/db/models/user.model';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 @ApiTags('用户管理')
+@UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

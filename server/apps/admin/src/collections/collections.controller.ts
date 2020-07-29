@@ -7,14 +7,17 @@ import {
   Post,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CollectionsService } from './collections.service';
 import { Collection } from '@libs/db/models/collection.model';
 import { CreateCollectionDto } from './dto/create-collection.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('collections')
 @ApiTags('收集管理')
+@UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class CollectionsController {
   constructor(private readonly cltsService: CollectionsService) {}

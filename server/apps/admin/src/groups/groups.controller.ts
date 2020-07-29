@@ -7,14 +7,17 @@ import {
   Post,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { GroupsService } from './groups.service';
 import { Group } from '@libs/db/models/group.model';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('groups')
 @ApiTags('群组管理')
+@UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}

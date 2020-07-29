@@ -6,14 +6,18 @@ import {
   Body,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { NoticesService } from './notices.service';
 import { Notice } from '@libs/db/models/notic.model';
 import { CreateNoticeDto } from './dto/notice.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('notices')
 @ApiTags('消息相关')
+@UseGuards(AuthGuard('UserJwt'))
+@ApiBearerAuth()
 export class NoticesController {
   constructor(private readonly noticesService: NoticesService) {}
   @Get()
