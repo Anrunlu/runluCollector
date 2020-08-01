@@ -52,6 +52,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/qiniu/tsconfig.lib.json"
       }
+    },
+    "msg": {
+      "type": "library",
+      "root": "libs/msg",
+      "entryFile": "index",
+      "sourceRoot": "libs/msg/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/msg/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -29,6 +29,12 @@
       ],
       "@app/qiniu/*": [
         "libs/qiniu/src/*"
+      ],
+      "@app/msg": [
+        "libs/msg/src"
+      ],
+      "@app/msg/*": [
+        "libs/msg/src/*"
       ]
     }
   }

@@ -13,6 +13,7 @@ import { NestEmitterModule } from 'nest-emitter';
 import { EventEmitter } from 'events';
 import { FeedbacksModule } from './feedbacks/feedbacks.module';
 import { NoticesModule } from './notices/notices.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { NoticesModule } from './notices/notices.module';
     NestEmitterModule.forRoot(new EventEmitter()),
     FeedbacksModule,
     NoticesModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppGateway],

@@ -95,7 +95,9 @@
       "@app/common/(.*)": "<rootDir>/libs/common/src/$1",
       "@app/common": "<rootDir>/libs/common/src",
       "@app/qiniu/(.*)": "<rootDir>/libs/qiniu/src/$1",
-      "@app/qiniu": "<rootDir>/libs/qiniu/src"
+      "@app/qiniu": "<rootDir>/libs/qiniu/src",
+      "@app/msg/(.*)": "<rootDir>/libs/msg/src/$1",
+      "@app/msg": "<rootDir>/libs/msg/src"
     }
   }
 }
