@@ -1,4 +1,8 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import {
+  Injectable,
+  HttpService,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { map } from 'rxjs/operators';
 import { messageFormat } from './message.format';
 import { QQMsg } from './message.dto';
@@ -13,17 +17,24 @@ export class MsgService {
         user_id,
         message: messageFormat(qqMsg),
       })
-      .pipe(map(response => response.data));
+      .pipe(map(response => response.data))
+      .toPromise()
+      .catch(() => {
+        throw new ServiceUnavailableException('发送失败');
+      });
   }
 
-  sendToMany(users_id: Array<number>, qqMsg: QQMsg): any {
+  async sendToMany(users_id: Array<number>, qqMsg: QQMsg): Promise<any> {
     for (const user_id of users_id) {
-      this.httpService
+      await this.httpService
         .post(`${process.env.QQ_ROBOT}/send_private_msg`, {
           user_id,
           message: messageFormat(qqMsg),
         })
-        .toPromise();
+        .toPromise()
+        .catch(() => {
+          throw new ServiceUnavailableException('发送失败');
+        });
     }
     return { success: true };
   }
