@@ -95,6 +95,17 @@ export class GroupsService {
     return { success: true };
   }
 
+  /* 移出群组 */
+  async kickOut(userId: string, groupId: string): Promise<any> {
+    await this.userModel.findByIdAndUpdate(Types.ObjectId(userId), {
+      $pull: { groups: Types.ObjectId(groupId) },
+    });
+    await this.groupModel.findByIdAndUpdate(groupId, {
+      $pull: { manager: Types.ObjectId(userId) },
+    });
+    return { success: true };
+  }
+
   /* 更新群组 */
   async update(id: string, updateGroupDto: CreateGroupDto): Promise<Group> {
     return await this.groupModel.findByIdAndUpdate(id, updateGroupDto, {

@@ -7,6 +7,7 @@ import {
   Post,
   Body,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { GroupsService } from './groups.service';
@@ -106,5 +107,14 @@ export class GroupsController {
     @Param('id') groupId: string,
   ): Promise<any> {
     return this.groupsService.remove((groupId as unknown) as Types.ObjectId);
+  }
+
+  @Put('kickOut')
+  @ApiOperation({ summary: '移除成员' })
+  kickOut(
+    @Query('userId') userId: string,
+    @Query('groupId') groupId: string,
+  ): any {
+    return this.groupsService.kickOut(userId, groupId);
   }
 }
