@@ -75,7 +75,7 @@ export class QueryService {
         },
       ]);
   }
-  // 查询已截止的任务
+  // 查询已全部的任务
   async myAllTasks(groups: Types.ObjectId[]): Promise<Collection[]> {
     return await this.cltModel.find({ groups: { $in: groups } }).populate([
       {
@@ -87,6 +87,22 @@ export class QueryService {
         select: 'nickname avatar',
       },
     ]);
+  }
+
+  // 查询收集是否已截止
+  async isCollectionEnd(cltId: string): Promise<any> {
+    const clt = await this.cltModel.find({
+      _id: Types.ObjectId(cltId),
+      endtime: { $lte: new Date() },
+    });
+    if (clt.length === 0) {
+      return { isEnd: false };
+    } else {
+      throw new BadRequestException({
+        statusCode: 1403,
+        message: '收集已截止，无法操作',
+      });
+    }
   }
 
   // 查询用户创建和管理的群组

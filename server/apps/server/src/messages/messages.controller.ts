@@ -9,6 +9,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
+import { QueryService } from '../query/query.service';
 
 @ApiTags('QQ消息相关')
 @ApiBearerAuth()
@@ -17,6 +18,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class MessagesController {
   constructor(
     private msgService: MsgService,
+    private queryService: QueryService,
     @InjectModel(User) private readonly userModel: ModelType<User>,
     @InjectModel(Collection) private readonly cltModel: ModelType<Collection>,
   ) {}
@@ -32,6 +34,9 @@ export class MessagesController {
     @Query('cltId') cltId: string,
     @Query('userId') userId: string,
   ): Promise<any> {
+    // 判断收集是否已截止
+    await this.queryService.isCollectionEnd(cltId);
+
     const clt = await this.cltModel
       .findById(Types.ObjectId(cltId))
       .populate('creator');
@@ -63,6 +68,9 @@ export class MessagesController {
     @Query('cltId') cltId: string,
     @Query('groupId') groupId: string,
   ): Promise<any> {
+    // 判断收集是否已截止
+    await this.queryService.isCollectionEnd(cltId);
+
     const clt = await this.cltModel
       .findById(Types.ObjectId(cltId))
       .populate('creator');
