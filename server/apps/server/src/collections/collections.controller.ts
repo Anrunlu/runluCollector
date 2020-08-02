@@ -8,6 +8,7 @@ import {
   Put,
   Delete,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -36,16 +37,25 @@ export class CollectionsController {
 
   @Get(':id')
   @ApiOperation({ summary: '显示收集详情' })
-  detail(
+  async detail(
     @Param('id') id: string,
     @Query('mode') mode: string,
   ): Promise<Collection> {
+    let clt = null;
     if (mode === 'detail') {
-      return this.cltsService.getDetail(id);
+      clt = await this.cltsService.getDetail(id);
     } else if (mode === 'titleAndGruops') {
-      return this.cltsService.getTitleAndGroups(id);
+      clt = await this.cltsService.getTitleAndGroups(id);
+    } else {
+      clt = await this.cltsService.getInfo(id);
     }
-    return this.cltsService.getInfo(id);
+    if (!clt) {
+      throw new BadRequestException({
+        statusCode: 4001,
+        message: '收集不存在或已被撤销',
+      });
+    }
+    return clt;
   }
 
   @Post()
