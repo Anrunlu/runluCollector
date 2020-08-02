@@ -82,13 +82,19 @@ export class QueryController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '查询给定收集的详细提交信息' })
-  getCltSubInfo(
+  async getCltSubInfo(
     @Param('id') cltId: string,
     @Query('groupId') groupId: string,
     @Query('type') type: string,
+    @CurrentUser() user: DocumentType<User>,
   ): Promise<Post[] | User[]> {
+    // 判断收集是否存在
+    await this.queryService.isCollectionExist(cltId);
+    // 判断是否收集所有者
+    await this.queryService.isCollectionOwner(user.id, cltId);
+
     if (!groupId) {
-      throw new BadRequestException();
+      throw new BadRequestException('请求参数有误');
     }
     if (type === 'submitted') {
       // 已提交列表

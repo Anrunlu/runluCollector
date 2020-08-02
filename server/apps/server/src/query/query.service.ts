@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from 'nestjs-typegoose';
 import { Org } from '@libs/db/models/org.model';
 import { ModelType } from '@typegoose/typegoose/lib/types';
@@ -166,6 +166,52 @@ export class QueryService {
       return { exist: true };
     } else {
       return { exist: false };
+    }
+  }
+
+  /* 查询收集是否存在 */
+  async isCollectionExist(cltId: string): Promise<any> {
+    const clt = await this.cltModel.findById(cltId);
+    if (clt) {
+      return { isExist: true };
+    } else {
+      throw new BadRequestException({
+        statusCode: 1400,
+        message: '收集不存在或已被撤销',
+      });
+    }
+  }
+
+  /* 查询是否是收集的主人 */
+  async isCollectionOwner(userId: string, cltId: string): Promise<any> {
+    const clt = await this.cltModel.find({
+      _id: Types.ObjectId(cltId),
+      creator: Types.ObjectId(userId),
+    });
+    if (clt.length > 0) {
+      return { isOwner: true };
+    } else {
+      throw new BadRequestException({
+        statusCode: 1401,
+        message: '无法访问',
+      });
+    }
+  }
+
+  /* 查询用户是否可以进入该收集 */
+  async isCollectionGuest(userId: string, cltId: string): Promise<any> {
+    const user = await this.userModel.findById(userId);
+    const clt = await this.cltModel.find({
+      _id: Types.ObjectId(cltId),
+      groups: { $in: user.groups },
+    });
+    if (clt.length > 0) {
+      return { isGuest: true };
+    } else {
+      throw new BadRequestException({
+        statusCode: 1404,
+        message: '无法访问',
+      });
     }
   }
 }
