@@ -146,7 +146,7 @@ export class QueryService {
   }
 
   /* 查询群组是否存在（用于加入群组和创建群组） */
-  async isGroupExist(groupName: string): Promise<any> {
+  async isGroupExistForJoinOrCreate(groupName: string): Promise<any> {
     const res = await this.groupModel
       .find({ name: groupName })
       .populate({ path: 'creator', select: 'nickname' });
@@ -176,7 +176,7 @@ export class QueryService {
       return { isExist: true };
     } else {
       throw new BadRequestException({
-        statusCode: 1400,
+        statusCode: 1404,
         message: '收集不存在或已被撤销',
       });
     }
@@ -209,7 +209,36 @@ export class QueryService {
       return { isGuest: true };
     } else {
       throw new BadRequestException({
-        statusCode: 1404,
+        statusCode: 1400,
+        message: '无法访问',
+      });
+    }
+  }
+
+  /* 查询群组是否存在 */
+  async isGroupExist(groupId: string): Promise<any> {
+    const group = await this.groupModel.findById(groupId);
+    if (group) {
+      return { isExist: true };
+    } else {
+      throw new BadRequestException({
+        statusCode: 3404,
+        message: '群组不存在或已被解散',
+      });
+    }
+  }
+
+  /* 查询用户是否可以查看群组 */
+  async isGroupGuset(userId: string, groupId: string): Promise<any> {
+    const user = await this.userModel.findById(userId);
+    const group = await this.groupModel.findById(groupId);
+    if (user.groups.includes(Types.ObjectId(groupId))) {
+      return { isGuest: true };
+    } else if (Types.ObjectId(userId) === group.creator) {
+      return { isGuest: true };
+    } else {
+      throw new BadRequestException({
+        statusCode: 3400,
         message: '无法访问',
       });
     }

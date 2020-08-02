@@ -113,7 +113,7 @@ export class QueryController {
   @UseGuards(AuthGuard('UserJwt'))
   @ApiOperation({ summary: '查询群组是否存在（用于加入群组）' })
   isGroupExist(@Query('groupName') groupName: string): any {
-    return this.queryService.isGroupExist(groupName);
+    return this.queryService.isGroupExistForJoinOrCreate(groupName);
   }
 
   @Get('isUsernameExist')

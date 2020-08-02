@@ -18,13 +18,17 @@ import { DocumentType } from '@typegoose/typegoose';
 import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { QueryService } from '../query/query.service';
 
 @ApiTags('群组相关')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('UserJwt'))
 @Controller('groups')
 export class GroupsController {
-  constructor(private readonly groupsService: GroupsService) {}
+  constructor(
+    private readonly groupsService: GroupsService,
+    private readonly querService: QueryService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '获取分类群组列表' })
@@ -43,7 +47,14 @@ export class GroupsController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取群组详情' })
-  getGroupDetail(@Param('id') groupId: string): Promise<Group> {
+  async getGroupDetail(
+    @Param('id') groupId: string,
+    @CurrentUser() user: DocumentType<User>,
+  ): Promise<Group> {
+    // 判断群组是否存在
+    await this.querService.isGroupExist(groupId);
+    // 判断是否可以进入群组
+    await this.querService.isGroupGuset(user.id, groupId);
     return this.groupsService.detail(groupId);
   }
 
