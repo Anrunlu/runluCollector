@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { MsgService } from '@app/msg';
-import { QQMsg } from '@app/msg/message.dto';
+import { QQMsg, msgType } from '@app/msg/message.dto';
 import { InjectModel } from 'nestjs-typegoose';
 import { User } from '@libs/db/models/user.model';
 import { Collection } from '@libs/db/models/collection.model';
@@ -56,7 +56,7 @@ export class MessagesController {
       }\n征集地址：${process.env.SERVER_DOMAIN}/collections/${clt._id}`;
     }
     const msg: QQMsg = {
-      type: 'creator_notice',
+      type: msgType.CREATOR_NOTICE,
       content,
     };
     return this.msgService.sendToOne(Number(user.qq), msg);
@@ -95,7 +95,7 @@ export class MessagesController {
       }\n征集地址：${process.env.SERVER_DOMAIN}/collections/${clt._id}`;
     }
     const msg: QQMsg = {
-      type: 'creator_notice',
+      type: msgType.CREATOR_NOTICE,
       content,
     };
     return this.msgService.sendToMany(users_qq, msg);

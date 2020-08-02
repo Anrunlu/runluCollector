@@ -16,13 +16,18 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { User } from '@libs/db/models/user.model';
 import { DocumentType } from '@typegoose/typegoose';
+import { MsgService } from '@app/msg';
+import { QQMsg, msgType } from '@app/msg/message.dto';
 
 @Controller('posts')
 @ApiTags('文件管理')
 @UseGuards(AuthGuard('UserJwt'))
 @ApiBearerAuth()
 export class PostsController {
-  constructor(private readonly cltsService: PostsService) {}
+  constructor(
+    private readonly cltsService: PostsService,
+    private readonly msgService: MsgService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '显示我的文件列表' })
@@ -38,7 +43,17 @@ export class PostsController {
 
   @Post()
   @ApiOperation({ summary: '创建新文件' })
-  create(@Body() createPostDto: CreatePostDto): Promise<PostFile> {
+  async create(
+    @Body() createPostDto: CreatePostDto,
+    @CurrentUser() user: DocumentType<User>,
+  ): Promise<PostFile> {
+    // 发送上传成功消息
+    const content = `文件名：${createPostDto.origname}\n下载地址：${createPostDto.fileUrl}`;
+    const msg: QQMsg = {
+      type: msgType.POST_UPLOADED_NOTICE,
+      content,
+    };
+    await this.msgService.sendToOne(Number(user.qq), msg);
     return this.cltsService.create(createPostDto);
   }
 
