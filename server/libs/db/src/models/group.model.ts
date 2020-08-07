@@ -25,6 +25,12 @@ export class Group {
   @prop({ ref: 'User' })
   manager: Ref<User>[];
 
+  @prop({ select: false })
+  ddwebhook: string;
+
+  @prop({ select: false })
+  ddsecret: string;
+
   @prop({
     localField: '_id',
     ref: 'Collection',

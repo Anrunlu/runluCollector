@@ -19,6 +19,7 @@ import { User } from '@libs/db/models/user.model';
 import { DocumentType } from '@typegoose/typegoose';
 import { AuthGuard } from '@nestjs/passport';
 import { QueryService } from '../query/query.service';
+import { MsgService } from '@app/msg';
 
 @Controller('collections')
 @ApiTags('收集管理')
@@ -28,6 +29,7 @@ export class CollectionsController {
   constructor(
     private readonly cltsService: CollectionsService,
     private readonly queryService: QueryService,
+    private readonly msgService: MsgService,
   ) {}
 
   @Get('')
@@ -62,10 +64,18 @@ export class CollectionsController {
 
   @Post()
   @ApiOperation({ summary: '创建新收集' })
-  create(
+  async create(
     @Body() createCollectionDto: CreateCollectionDto,
   ): Promise<Collection> {
-    return this.cltsService.create(createCollectionDto);
+    const clt = await this.cltsService.create(createCollectionDto);
+    for (const groupId of createCollectionDto.groups) {
+      this.msgService.sendDingTalkMsg(
+        (clt as any)._id,
+        String(groupId),
+        'newClt',
+      );
+    }
+    return clt;
   }
 
   @Put(':id')

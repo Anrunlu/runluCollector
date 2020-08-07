@@ -11,6 +11,20 @@ import { QQMsg } from './message.dto';
 export class MsgService {
   constructor(private httpService: HttpService) {}
 
+  sendDingTalkMsg(cltId: string, groupId: string, msgType: string): any {
+    return this.httpService
+      .post(`${process.env.DD_ROBOT}/cltNotice`, {
+        cltId,
+        groupId,
+        msgType,
+      })
+      .pipe(map(response => response.data))
+      .toPromise()
+      .catch(() => {
+        throw new ServiceUnavailableException('发送失败');
+      });
+  }
+
   sendToOne(user_id: number, qqMsg: QQMsg): any {
     return this.httpService
       .post(`${process.env.QQ_ROBOT}/send_private_msg`, {

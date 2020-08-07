@@ -19,6 +19,7 @@ import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { QueryService } from '../query/query.service';
+import { DingTalkRobotSettingsDto } from '../collections/dto/ddsettings.dto';
 
 @ApiTags('群组相关')
 @ApiBearerAuth()
@@ -56,6 +57,21 @@ export class GroupsController {
     // 判断是否可以进入群组
     await this.querService.isGroupGuset(user.id, groupId);
     return this.groupsService.detail(groupId);
+  }
+
+  @Get('ddsetings/:id')
+  @ApiOperation({ summary: '获取群组钉钉机器人配置' })
+  getDingTalkRobotSettings(@Param('id') groupId: string): Promise<any> {
+    return this.groupsService.getDingtalkRobotSettings(groupId);
+  }
+
+  @Put('ddsetings/:id')
+  @ApiOperation({ summary: '设置群组钉钉机器人配置' })
+  setDingTalkRobotSettings(
+    @Param('id') groupId: string,
+    @Body() ddSettingsDto: DingTalkRobotSettingsDto,
+  ): Promise<any> {
+    return this.groupsService.setDingtalkRobotSettings(groupId, ddSettingsDto);
   }
 
   @Post()

@@ -11,7 +11,7 @@ import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { QueryService } from '../query/query.service';
 
-@ApiTags('QQ消息相关')
+@ApiTags('消息相关')
 @ApiBearerAuth()
 @Controller('messages')
 @UseGuards(AuthGuard('UserJwt'))
@@ -60,6 +60,18 @@ export class MessagesController {
       content,
     };
     return this.msgService.sendToOne(Number(user.qq), msg);
+  }
+
+  @Get('sendDingTalkRemindMsg')
+  @ApiOperation({ summary: '发送钉钉消息提醒' })
+  async handleSendDingTalkRemindMsg(
+    @Query('cltId') cltId: string,
+    @Query('groupId') groupId: string,
+  ): Promise<any> {
+    // 判断收集是否已截止
+    await this.queryService.isCollectionEnd(cltId);
+
+    return this.msgService.sendDingTalkMsg(cltId, groupId, 'remind');
   }
 
   @Get('sendNotifyToGroup')

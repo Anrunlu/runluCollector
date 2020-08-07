@@ -20,7 +20,7 @@ export class Collection {
   @prop()
   description: string;
 
-  @prop({ enum: ['publice', 'private'] })
+  @prop({ enum: ['public', 'private'] })
   property: string;
 
   @prop({ ref: 'Org' })

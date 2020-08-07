@@ -6,6 +6,7 @@ import { Types } from 'mongoose';
 import { User } from '@libs/db/models/user.model';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { Collection } from '@libs/db/models/collection.model';
+import { DingTalkRobotSettingsDto } from '../collections/dto/ddsettings.dto';
 
 @Injectable()
 export class GroupsService {
@@ -38,6 +39,19 @@ export class GroupsService {
       { path: 'members', select: 'username nickname avatar' },
       { path: 'org', select: 'name' },
     ]);
+  }
+
+  /* 获取群组钉钉机器人配置 */
+  async getDingtalkRobotSettings(id: string): Promise<Group> {
+    return await this.groupModel.findById(id).select('ddwebhook ddsecret');
+  }
+
+  /* 设置群组钉钉机器人配置 */
+  async setDingtalkRobotSettings(
+    id: string,
+    ddSettingsDto: DingTalkRobotSettingsDto,
+  ): Promise<Group> {
+    return await this.groupModel.findByIdAndUpdate(id, ddSettingsDto);
   }
 
   /* 创建群组 */
