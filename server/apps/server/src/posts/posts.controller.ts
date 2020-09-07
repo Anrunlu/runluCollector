@@ -53,6 +53,7 @@ export class PostsController {
       type: msgType.POST_UPLOADED_NOTICE,
       content,
     };
+    // 弃用以下代码，qq机器人服务已停止
     await this.msgService.sendToOne(Number(user.qq), msg);
     return this.cltsService.create(createPostDto);
   }
