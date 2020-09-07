@@ -54,7 +54,7 @@ export class PostsController {
       content,
     };
     // 弃用以下代码，qq机器人服务已停止
-    await this.msgService.sendToOne(Number(user.qq), msg);
+    // await this.msgService.sendToOne(Number(user.qq), msg);
     return this.cltsService.create(createPostDto);
   }
 
