@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+
+[packages]
+flask = "*"
+flask-apscheduler = "*"
+pymongo = "*"
+dingtalkchatbot = "*"
+gunicorn = "*"
+eventlet = "*"
+
+[requires]
+python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true
