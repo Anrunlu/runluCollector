@@ -41,9 +41,7 @@ PM2：v4.4.0 +
 ##### 服务端部署
 
 1. 确保 MongoDB 服务已启动
-
 2. 进入项目 server 目录，运行**npm install** 安装依赖
-
 3. 在 server 目录运行**nest build server** 命令构建面向客户端的服务
 4. 在 server 目录运行**nest build admin**命令构建面向管理端的服务
 5. 进入 server/dist/apps/server 文件夹，运行 **pm2 main**，运行客户端服务
