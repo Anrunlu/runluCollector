@@ -36,4 +36,6 @@ $ npm run test:cov
 
 ## License
 
-  Nest is [MIT licensed](LICENSE).
+ Copyright (c) 2020-present Runlu An
+
+ [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).

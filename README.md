@@ -70,3 +70,9 @@ PM2：v4.4.0 +
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
+
+#### License
+
+Copyright (c) 2020-present Runlu An
+
+[MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
